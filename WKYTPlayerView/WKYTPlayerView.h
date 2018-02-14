@@ -143,6 +143,9 @@ typedef NS_ENUM(NSInteger, WKYTPlayerError) {
 
 @property(nonatomic, strong, nullable, readonly) WKWebView *webView;
 
+/** A Configuration for webView. If you update parameters you need to call loadWithVideoId: to recreate webview*/
+@property (nonatomic, nonnull, readonly) WKWebViewConfiguration *configuration;
+
 /** A delegate to be notified on playback events. */
 @property(nonatomic, weak, nullable) id<WKYTPlayerViewDelegate> delegate;
 

@@ -67,6 +67,8 @@ NSString static *const kWKYTPlayerSyndicationRegexPattern = @"^https://tpc.googl
 @property (nonatomic, strong) NSURL *originURL;
 @property (nonatomic, weak) UIView *initialLoadingView;
 
+@property (nonatomic, nonnull) WKWebViewConfiguration *configuration;
+
 @end
 
 @implementation WKYTPlayerView
@@ -1018,6 +1020,17 @@ NSString static *const kWKYTPlayerSyndicationRegexPattern = @"^https://tpc.googl
     return boolValue ? @"true" : @"false";
 }
 
+#pragma mark - Configuration
+
+- (WKWebViewConfiguration *)configuration {
+    if (!_configuration) {
+        _configuration = [WKWebViewConfiguration new];
+        _configuration.allowsInlineMediaPlayback = YES;
+        _configuration.mediaPlaybackRequiresUserAction = NO;
+    }
+    return _configuration;
+}
+
 #pragma mark - Exposed for Testing
 
 - (void)setWebView:(WKWebView *)webView {
@@ -1034,15 +1047,9 @@ NSString static *const kWKYTPlayerSyndicationRegexPattern = @"^https://tpc.googl
     WKUserContentController *wkUController = [[WKUserContentController alloc] init];
     [wkUController addUserScript:wkUScript];
     
-    WKWebViewConfiguration *configuration = [WKWebViewConfiguration new];
+    self.configuration.userContentController = wkUController;
     
-    configuration.userContentController = wkUController;
-    
-    configuration.allowsInlineMediaPlayback = YES;
-    configuration.mediaPlaybackRequiresUserAction = NO;
-    configuration.allowsPictureInPictureMediaPlayback = NO;
-    
-    WKWebView *webView = [[WKWebView alloc] initWithFrame:self.bounds configuration:configuration];
+    WKWebView *webView = [[WKWebView alloc] initWithFrame:self.bounds configuration:self.configuration];
     webView.scrollView.scrollEnabled = NO;
     webView.scrollView.bounces = NO;
     
